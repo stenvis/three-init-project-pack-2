@@ -1,18 +1,23 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Three.js init pack 1</title>
+		<title>Footwork Development</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<script src="dependencies/three/three.min.js"></script>
-		<script src="dependencies/three/GLTFLoader.js"></script>
-		<script src="dependencies/three/DRACOLoader.js"></script>
-		<script src="dependencies/three/OrbitControls.js"></script>
 		<link href="css/index.css" rel="stylesheet" />
 	</head>
 	<body>
+		<div id="progress-bar">
+			<div class="progress-bar-wrapper">
+				<img src="/assets/images/logo.png" id="load-logo">
+				<div class="progress-bar-text">
+					<span>Loading:</span>
+					<span id="loading-percentage">0%</span>
+				</div>
+			</div>
+		</div>
       <canvas id="canvas"></canvas>
 		<script src="js/root.js" type="module"></script>
+		<div id="app-version" class="system-text-1"></div>
 	</body>
 </html>
-
