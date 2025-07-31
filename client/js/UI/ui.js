@@ -1,9 +1,11 @@
-const UI = {
-   register,
-};
+import orbital_ui from "./workspace/orbital.js";
 
 function register() {
-   // *_ui.register();
+   orbital_ui.register();
+}
+
+const UI = {
+   register,
 };
 
 export default UI;

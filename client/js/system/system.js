@@ -1,19 +1,13 @@
-import DOM from '/js/storage/dom.js';
-import SYSTEM_PRESETS from '/js/system/presets.js';
-import Configer from '/js/lib/3D/configer/configer.js';
-import Camera from '/js/lib/3D/camera/camera.js';
-import OrbitControl from '/js/lib/3D/controls/orbit.js';
-import HemisphereLight from '/js/lib/3D/light/hemisphere.js';
-import Workspace from '/js/lib/abstractions/workspace/workspace.js';
+import { canvas_bg_color } from "/configs/configs.js";
+import SYSTEM_PRESETS from "/js/system/presets.js";
+import OrbitalCamera from "/js/lib/3D/camera/orbital.js";
+import AnimationPool from "/js/lib/3D/pool/pool.js";
 
-const 
-   { canvas } = DOM,
-   { 
-      CTX_PRESETS,
-      CHARACTER_CAMERA_PRESETS,
-      ORBIT_CONTROL_PRESETS,
-      HEMISPHERE_LIGHT_PRESETS,
-   } = SYSTEM_PRESETS;
+const {
+   CTX_PRESETS,
+} = SYSTEM_PRESETS;
+
+const canvas = document.getElementById('canvas');
 
 const 
    scene = new THREE.Scene(),
@@ -22,28 +16,33 @@ const
       ...CTX_PRESETS,
    });
 
-const 
-   configer = new Configer(),
-   workspace = new Workspace(scene);
+scene.background = new THREE.Color(canvas_bg_color);
 
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const orbital = new OrbitalCamera(camera);
+const pool = new AnimationPool();
 
-configer.setRenderer(renderer);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+scene.add(directionalLight);
 
-const 
-   camera = new Camera(CHARACTER_CAMERA_PRESETS),
-   orbit_control = new OrbitControl(camera.src, canvas, ORBIT_CONTROL_PRESETS),
-   hemisphere_light = new HemisphereLight(HEMISPHERE_LIGHT_PRESETS); 
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+scene.add(ambientLight);
 
-scene.add(hemisphere_light);
+const hemiLight = new THREE.HemisphereLight(0x03dffc, 0x3d362b, 2);
+hemiLight.position.set(0, 20, 0);
+scene.add(hemiLight);
+
+camera.position.set(0, 0, 10);
 
 const system = {
+   canvas,
    scene,
    renderer,
    camera,
-   orbit_control,
+   orbital,
+   pool,
 };
 
 window.THREE_APP.system = system; 
-window.THREE_APP.workspace = workspace; 
 
 export default system;

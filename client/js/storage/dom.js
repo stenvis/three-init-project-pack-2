@@ -1,22 +1,25 @@
-import element from "/js/lib/helpers/browser/dom-elements.js";
+import elements from "/js/lib/helpers/elements.js";
 
 const {
    GEBI,
    GEBCN,
-} = element;
+   QS,
+   GEBTN,
+} = elements;
 
 const 
    canvas = GEBI('canvas'),
-   progress_bar = GEBI('progress-bar'),
-   loading_percentage = GEBI('loading-percentage'),
-   app_version = GEBI('app-version');
-
+   preload_progress = GEBI('preload-progress'),
+   preload_line = GEBI('preload-line'),
+   preload_value = GEBI('preload-value'),
+   upload_image = GEBI('upload-image');
 
 const DOM = {
    canvas,
-   progress_bar,
-   loading_percentage,
-   app_version,
+   preload_progress,
+   preload_line,
+   preload_value,
+   upload_image,
 };
 
 export default DOM;

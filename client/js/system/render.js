@@ -1,45 +1,52 @@
-import DOM from '/js/storage/dom.js';
-import listener from '/js/lib/helpers/browser/listener.js';
-import Resize from '/js/lib/3D/resize/resize.js';
+import Resize from '/js/system/resize.js';
 import system from '/js/system/system.js';
 
-let _renderRequested = false;
+let _render_requested;
 
-const
-   { canvas } = DOM,
-   { scene, renderer, camera, orbit_control } = system,
-   { addEv } = listener;
+const { scene, renderer, camera, canvas, pool } = system;
 
 const resize = new Resize(system, canvas);
 
-const checkResize = () => {
-   resize.update();
+function checkResize() { 
+   resize.check();
    update();
-};
+}
 
-const update = () => {
-   if (_renderRequested) return;
-   _renderRequested = true;
+function update() {
+   if (_render_requested) return;
+   _render_requested = true;
    requestAnimationFrame(tick, canvas);
-};
+}
 
 function tick() {
-   _renderRequested = false;
-   renderer.render(scene, camera.src);
-   orbit_control.src.update();
-};
+   _render_requested = false;
+   renderer.render(scene, camera);
+}
+
+function tick_1() {
+   renderer.render(scene, camera);
+   pool.pass();
+}
+
+function animate() {
+   _render_requested = requestAnimationFrame(tick_1, canvas);
+}
+
+function cancel() {
+   cancelAnimationFrame(_render_requested);
+}
 
 function start() {
    tick();
+   window.addEventListener('resize', checkResize);
    checkResize();
-   addEv(window, 'resize', checkResize);
-   addEv(orbit_control.src, 'change', update);
-};
+}
 
 const render = {
    start,
    update,
-   checkResize,
+   animate,
+   cancel,
 };
 
 window.render = render;

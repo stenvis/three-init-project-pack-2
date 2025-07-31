@@ -1,7 +1,5 @@
 import * as THREE from '/dependencies/three/three.js';
 
-const initTHREE = (function () {
-   window.THREE = THREE;
-})();
+window.THREE = THREE;
 
-export default initTHREE;
+export default {};

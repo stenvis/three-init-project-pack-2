@@ -1,19 +1,11 @@
-import Scene from '/js/lib/abstractions/collections/scene-collections.js';
-import facades from '/js/facades/facades.js';
+import Scene from '/js/lib/helpers/collection/scene.js';
 
-const 
-   collections_scene_1 = ['models'];
+const collection = ['models', 'hdrs', 'textures'];
 
-const
-   scene_1 = new Scene(collections_scene_1);
-
-const collections = {
-   scene_1,
-};
+const dataset = new Scene(collection);
 
 window.THREE_APP = {
-   collections,
-   facades,
+   dataset,
 };
 
-export default {};
+export default THREE_APP;

@@ -1,4 +1,8 @@
 :root {
+   --active-color: #279da1; 
+
+   --bg-color-1: #278da1;
+
    --font-color-1: #5c5c5c;
 
    --basis-font: 'montserrat';
