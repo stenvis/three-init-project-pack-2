@@ -1,6 +1,6 @@
 import { canvas_bg_color } from "/configs/configs.js";
 import SYSTEM_PRESETS from "/js/system/presets.js";
-import OrbitalCamera from "/js/lib/3D/camera/orbital.js";
+import OrbitalCamera from "/js/lib/3D/camera/camera.js";
 import AnimationPool from "/js/lib/3D/pool/pool.js";
 
 const {
@@ -32,7 +32,7 @@ const hemiLight = new THREE.HemisphereLight(0x03dffc, 0x3d362b, 2);
 hemiLight.position.set(0, 20, 0);
 scene.add(hemiLight);
 
-camera.position.set(0, 0, 10);
+camera.position.set(0, 0, 70);
 
 const system = {
    canvas,

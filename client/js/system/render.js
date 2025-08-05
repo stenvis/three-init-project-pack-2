@@ -26,6 +26,7 @@ function tick() {
 function tick_1() {
    renderer.render(scene, camera);
    pool.pass();
+   _render_requested = null;
 }
 
 function animate() {

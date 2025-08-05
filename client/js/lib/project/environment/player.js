@@ -1,4 +1,4 @@
-let player_mesh;
+let model;
 
 function create() {
    const 
@@ -11,9 +11,11 @@ function create() {
    const texture = THREE_APP.dataset.textures.getObject('uv_grid');
    material.map = texture;
 
-   // player_mesh = models.getObject('xbot').scene;
+   model = models.getObject('xbot').scene;
+   scene.add(model);
 
    scene.add(sphere);
+   THREE_APP.system.sphere = sphere;
 };
 
 const player = {

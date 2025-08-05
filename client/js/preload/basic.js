@@ -7,7 +7,7 @@ import stage_1 from './stages/stage1.js';
 let simple_stage_executed = false;
 
 function getOnloadCount() {
-   return loadModels.getOnloadCount() + loadModels.getReadyCount();
+   return loadModels.getOnloadCount() + loadTextures.getReadyCount();
 };
 
 function getLoadedCount() {

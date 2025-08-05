@@ -56,6 +56,6 @@ http.createServer((req, res) => {
       'Content-Length': size,
       });
    if (stream) stream.pipe(res);
-}).listen(PORT, 'localhost');
+}).listen(PORT, '0.0.0.0');
 
 console.log(`Server started: \x1b[33mlocalhost:${PORT}\x1b[0m`);
