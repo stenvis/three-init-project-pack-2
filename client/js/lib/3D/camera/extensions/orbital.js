@@ -41,7 +41,6 @@ class Orbtial {
    defineAngles() {
       const { src_euler, dst_euler, vec3, origin } = this.#state, { position } = this.#camera;
       this.#state.distance = position.distanceTo(origin);
-      console.log('distance', this.#state.distance);
       vec3.copy(position).sub(origin);
       dst_euler.x = src_euler.x = atan2(-vec3.x, vec3.z);
       dst_euler.y = src_euler.y = atan2(vec3.y, sqrt(vec3.x ** 2 + vec3.z ** 2));
@@ -75,8 +74,8 @@ class Orbtial {
    pointerUp() {
       const { dst_euler, dirX, dirY } = this.#state;
       this.#damping_factor = DAMPING_FACTOR_OUTER;
-      dst_euler.y += dirX * 0.01 * INERTIA_FACTOR;
-      dst_euler.x += dirY * 0.01 * INERTIA_FACTOR;
+      dst_euler.x += dirX * 0.01 * INERTIA_FACTOR;
+      dst_euler.y += dirY * 0.01 * INERTIA_FACTOR;
       dst_euler.y = max(MIN_POLAR_ANGLE, min(MAX_POLAR_ANGLE, dst_euler.y));
    }
 

@@ -29,6 +29,7 @@ function pointerDown(ev) {
       if (orbital.is_centroid) return;
       orbital.setMode('centroid');
       orbital.update(ev);
+      window.render.update();
    }
    is_locked = false;
    pool.removeTarget(CAMERA_DAMPING_INDEX);

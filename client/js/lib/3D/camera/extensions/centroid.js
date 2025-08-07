@@ -1,4 +1,5 @@
 import easing from "/js/lib/helpers/math/easing.js";
+import debug from "/js/lib/helpers/debug.js";
 
 const {
    abs,
@@ -13,11 +14,15 @@ const
    CENTROID_THRESHOLD = 0.002,
 	DAMPING_FACTOR = 0.1;
 
-const CAMERA_DAMPING_INDEX = 'camera_id';
+const CAMERA_DAMPING_INDEX = 'camera_centroid_id';
 
 class Centroid {
    #camera;
    #state;
+	#cross_x = new THREE.Vector3();
+	#cross_y = new THREE.Vector3();
+	#dst_origin = new THREE.Vector3();
+	#offset = new THREE.Vector3();
 
    constructor(camera, state) {
       this.#camera = camera;
@@ -25,31 +30,30 @@ class Centroid {
    }
 
 	enable() {
-      const { origin, direction, cross, last_camera_pos, last_centroid_pos, centroid_offset } = this.#state;
+      const { origin, direction, right, cross, last_camera_pos, last_centroid_pos, centroid_offset } = this.#state;
 		this.#camera.getWorldDirection(direction);
 		cross.crossVectors(direction, this.#camera.up);
+		this.#cross_x.crossVectors(direction, this.#camera.up).normalize();
+		this.#cross_y.crossVectors(this.#cross_x, direction).normalize();
 		last_camera_pos.copy(this.#camera.position);
 		last_centroid_pos.copy(origin);
 		centroid_offset.set(0, 0, 0);
+		// const arrow_x = debug.arrowHelper('x', this.#cross_x);
+		const arrow_x = debug.arrowHelper('x', this.#cross_x);
+		const arrow_y = debug.arrowHelper('y', this.#cross_y);
+		debug.clear();
+		debug.add(arrow_y);
+		debug.add(arrow_x);
 	}
 
 	move() {
-		const camera = this.#camera, { aspect } = camera;
-      const { centroid_offset, dirX, dirY, cross, direction, dst_centroid_pos, dst_camera_pos, last_centroid_pos, last_camera_pos } = this.#state;
+      const { dirX, dirY, origin } = this.#state;
 
-		centroid_offset.x -= dirX * 0.1 * MOVE_SPEED;
-		centroid_offset.y -= dirY * 0.1 * MOVE_SPEED;
+		this.#offset.subVectors(this.#camera.position, origin);
 
-		const
-			rx = cross.x * centroid_offset.x,
-			ry = cross.y * centroid_offset.x,
-			fx = direction.x * centroid_offset.y,
-			fy = direction.y * centroid_offset.y;
-
-		dst_centroid_pos.x = last_centroid_pos.x + rx + fx;
-		dst_centroid_pos.y = last_centroid_pos.y + ry + fy;
-		dst_camera_pos.x = last_camera_pos.x + rx + fx;
-		dst_camera_pos.y = last_camera_pos.y + ry + fy;
+		this.#dst_origin.copy(origin);
+		this.#dst_origin.addScaledVector(this.#cross_x, -dirX * MOVE_SPEED);
+		this.#dst_origin.addScaledVector(this.#cross_y, dirY * MOVE_SPEED);
 	}
 
 	helper(origin) {
@@ -57,16 +61,17 @@ class Centroid {
 	}
 
 	damping = () => {
-      const { origin, dst_centroid_pos, dst_camera_pos } = this.#state, camera = this.#camera;
-		origin.x = lerp(origin.x, dst_centroid_pos.x, DAMPING_FACTOR);
-		origin.y = lerp(origin.y, dst_centroid_pos.y, DAMPING_FACTOR);
-		camera.position.x = lerp(camera.position.x, dst_camera_pos.x, DAMPING_FACTOR);
-		camera.position.y = lerp(camera.position.y, dst_camera_pos.y, DAMPING_FACTOR);
+      const { origin } = this.#state;
 
-		camera.lookAt(origin);
+		origin.lerp(this.#dst_origin, DAMPING_FACTOR);
+
+		this.#camera.position.copy(origin).add(this.#offset);
+
+		this.#camera.lookAt(origin);
 		this.helper(origin);
 
-		const threshold = this.offsetThreshold(camera.position);
+
+		const threshold = this.offsetThreshold(this.#camera.position);
 
 		if (threshold) this.clear(); 
 	}
@@ -75,15 +80,17 @@ class Centroid {
 		THREE_APP.system.pool.removeTarget(CAMERA_DAMPING_INDEX);
 	}
 
-	offsetThreshold(src_camera_pos) {
-      const { dst_camera_pos } = this.#state;
+	offsetThreshold() {
+      const { origin } = this.#state, { x, y, z} = this.#dst_origin;
 		const
-			dx = abs(src_camera_pos.x - dst_camera_pos.x),
-			dy = abs(src_camera_pos.y - dst_camera_pos.y),
+			dx = abs(x - origin.x),
+			dy = abs(y - origin.y),
+			dz = abs(z - origin.z),
 			tx = dx < CENTROID_THRESHOLD,
-			ty = dy < CENTROID_THRESHOLD;
+			ty = dy < CENTROID_THRESHOLD,
+			tz = dz < CENTROID_THRESHOLD;
 
-		return tx * ty;
+		return tx * ty * tz;
 	}
 
    pointerUp = () => {};

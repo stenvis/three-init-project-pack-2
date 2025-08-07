@@ -1,3 +1,5 @@
+import debug from "/js/lib/helpers/debug.js";
+
 let model;
 
 function create() {
@@ -13,6 +15,8 @@ function create() {
 
    model = models.getObject('xbot').scene;
    scene.add(model);
+
+   scene.add(debug.container);
 
    scene.add(sphere);
    THREE_APP.system.sphere = sphere;
