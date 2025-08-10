@@ -18,7 +18,7 @@ class AnimationPool {
       if (!this.#is_runned) {
          this.#is_runned = true;
          this.pass();
-      };
+      }
    }
 
    removeTarget(key) {

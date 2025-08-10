@@ -43,7 +43,6 @@ function pointerUp(ev) {
 
 function changeZoom({ deltaY }) {
    zoom.change(deltaY);
-   // pool.addTarget(ZOOM_DAMPING_INDEX, zoom.damping);
 }
 
 function pointerLeave() {

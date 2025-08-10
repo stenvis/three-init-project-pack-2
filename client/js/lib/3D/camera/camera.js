@@ -37,6 +37,7 @@ class OrbitalCamera {
       this.#extensions['zoom'] = new Centroid(camera, this.#state); 
 
       this.#zoom = new Zoom(camera, this.#state);
+      this.#state.distance = camera.position.distanceTo(this.#state.origin);
 
       this.setMode('orbital');
    }
