@@ -13,15 +13,10 @@ const {
 let is_locked = true, was_move = false;
 let camera, orbital, pool, zoom;
 
-// need some way without id;
-const CAMERA_DAMPING_INDEX = 'camera_id', ZOOM_DAMPING_INDEX = 'zoom_id';
-
 function move(ev) {
    if (is_locked) return;
    orbital.update(ev);
-   pool.addTarget(CAMERA_DAMPING_INDEX, orbital.damping);
    was_move = true;
-   // window.render.update();
 }
 
 function pointerDown(ev) {
@@ -29,10 +24,8 @@ function pointerDown(ev) {
       if (orbital.is_centroid) return;
       orbital.setMode('centroid');
       orbital.update(ev);
-      window.render.update();
    }
    is_locked = false;
-   pool.removeTarget(CAMERA_DAMPING_INDEX);
    orbital.pointerDown();
 }
 
@@ -50,7 +43,7 @@ function pointerUp(ev) {
 
 function changeZoom({ deltaY }) {
    zoom.change(deltaY);
-   pool.addTarget(ZOOM_DAMPING_INDEX, zoom.damping);
+   // pool.addTarget(ZOOM_DAMPING_INDEX, zoom.damping);
 }
 
 function pointerLeave() {
@@ -76,7 +69,7 @@ function delEvents() {
    delEv(canvas, 'pointerdown', pointerDown);
    delEv(canvas, 'pointermove', move);
    delEv(canvas, 'pointerup', pointerUp);
-   delEv(canvas, 'wheel', zoom);
+   delEv(canvas, 'wheel', changeZoom);
    delEv(canvas, 'pointerleave', pointerLeave);
 }
 

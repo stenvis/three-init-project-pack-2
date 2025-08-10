@@ -16,15 +16,13 @@ const
 	RAD = PI / 180;
 
 const
-   ANGLE_THRESHOLD = 0.002,
+   ANGLE_THRESHOLD = 0.001,
    ROTATION_SPEED = 0.2,
    DAMPING_FACTOR_INNER = 0.2,
    DAMPING_FACTOR_OUTER = 0.1,
    MAX_POLAR_ANGLE = 80 * RAD,
    MIN_POLAR_ANGLE = -10 * RAD,
    INERTIA_FACTOR = 0.5;
-
-const CAMERA_DAMPING_INDEX = 'camera_id';
 
 class Orbtial {
    #camera;
@@ -51,6 +49,8 @@ class Orbtial {
       dst_euler.x += dirX * ROTATION_SPEED * RAD;
       dst_euler.y += dirY * ROTATION_SPEED * RAD;
       dst_euler.y = max(MIN_POLAR_ANGLE, min(MAX_POLAR_ANGLE, dst_euler.y));
+
+		THREE_APP.system.pool.addTarget(this.#camera.uuid, this.damping);
    }
 
    damping = () => {
@@ -85,7 +85,7 @@ class Orbtial {
    }
 
    clear() {
-		THREE_APP.system.pool.removeTarget(CAMERA_DAMPING_INDEX);
+		THREE_APP.system.pool.removeTarget(this.#camera.uuid);
    }
 
    angleThreshold() {

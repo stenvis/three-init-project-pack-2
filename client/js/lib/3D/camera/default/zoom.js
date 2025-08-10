@@ -17,8 +17,6 @@ const
    MIN_DIST = 20,
    MAX_DIST = 100;
 
-const ZOOM_DAMPING_INDEX = 'zoom_id';
-
 class Zoom {
    #camera;
    #state;
@@ -34,6 +32,8 @@ class Zoom {
       n = max(-80, min(80, n));
       const { distance } = this.#state;
       this.#target_distance = max(MIN_DIST, min(MAX_DIST, distance + (n * ZOOM_SPEED * distance)));
+
+		THREE_APP.system.pool.addTarget(this.#camera.uuid, this.damping);
    }
 
    damping = () => {
@@ -55,7 +55,7 @@ class Zoom {
    }
 
    clear() {
-		THREE_APP.system.pool.removeTarget(ZOOM_DAMPING_INDEX);
+		THREE_APP.system.pool.removeTarget(this.#camera.uuid);
    }
 
    zoomThreshold() {

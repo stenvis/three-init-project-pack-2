@@ -1,20 +1,11 @@
-import easing from "/js/lib/helpers/math/easing.js";
-import debug from "/js/lib/helpers/debug.js";
-
 const {
    abs,
 } = Math;
 
-const {
-   lerp,
-} = easing;
-
 const
 	MOVE_SPEED = 0.2,
-   CENTROID_THRESHOLD = 0.002,
+   CENTROID_THRESHOLD = 0.001,
 	DAMPING_FACTOR = 0.1;
-
-const CAMERA_DAMPING_INDEX = 'camera_centroid_id';
 
 class Centroid {
    #camera;
@@ -30,7 +21,7 @@ class Centroid {
    }
 
 	enable() {
-      const { origin, direction, right, cross, last_camera_pos, last_centroid_pos, centroid_offset } = this.#state;
+      const { origin, direction, cross, last_camera_pos, last_centroid_pos, centroid_offset } = this.#state;
 		this.#camera.getWorldDirection(direction);
 		cross.crossVectors(direction, this.#camera.up);
 		this.#cross_x.crossVectors(direction, this.#camera.up).normalize();
@@ -38,12 +29,6 @@ class Centroid {
 		last_camera_pos.copy(this.#camera.position);
 		last_centroid_pos.copy(origin);
 		centroid_offset.set(0, 0, 0);
-		// const arrow_x = debug.arrowHelper('x', this.#cross_x);
-		const arrow_x = debug.arrowHelper('x', this.#cross_x);
-		const arrow_y = debug.arrowHelper('y', this.#cross_y);
-		debug.clear();
-		debug.add(arrow_y);
-		debug.add(arrow_x);
 	}
 
 	move() {
@@ -54,22 +39,16 @@ class Centroid {
 		this.#dst_origin.copy(origin);
 		this.#dst_origin.addScaledVector(this.#cross_x, -dirX * MOVE_SPEED);
 		this.#dst_origin.addScaledVector(this.#cross_y, dirY * MOVE_SPEED);
-	}
 
-	helper(origin) {
-		THREE_APP.system.sphere.position.copy(origin);
+		THREE_APP.system.pool.addTarget(this.#camera.uuid, this.damping);
 	}
 
 	damping = () => {
       const { origin } = this.#state;
 
 		origin.lerp(this.#dst_origin, DAMPING_FACTOR);
-
 		this.#camera.position.copy(origin).add(this.#offset);
-
 		this.#camera.lookAt(origin);
-		this.helper(origin);
-
 
 		const threshold = this.offsetThreshold(this.#camera.position);
 
@@ -77,7 +56,7 @@ class Centroid {
 	}
 
    clear() {
-		THREE_APP.system.pool.removeTarget(CAMERA_DAMPING_INDEX);
+		THREE_APP.system.pool.removeTarget(this.#camera.uuid);
 	}
 
 	offsetThreshold() {

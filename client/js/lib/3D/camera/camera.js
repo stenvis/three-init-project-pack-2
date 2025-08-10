@@ -10,7 +10,6 @@ const
 	DIR_LIMIT = 128;
 
 class OrbitalCamera {
-   #camera;
    #zoom;
    #extensions = {};
    #state = {
@@ -33,10 +32,9 @@ class OrbitalCamera {
    #mode;
    
    constructor(camera) {
-      this.#camera = camera;
-
       this.#extensions['orbital'] = new Orbtial(camera, this.#state); 
       this.#extensions['centroid'] = new Centroid(camera, this.#state); 
+      this.#extensions['zoom'] = new Centroid(camera, this.#state); 
 
       this.#zoom = new Zoom(camera, this.#state);
 
@@ -57,7 +55,6 @@ class OrbitalCamera {
    }
 
    move() { this.#mode.move(); }
-   damping = () => { this.#mode.damping(); }
    pointerUp() { this.#mode.pointerUp(); }
    pointerDown() { this.#mode.pointerDown(); }
 
