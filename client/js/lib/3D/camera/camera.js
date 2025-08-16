@@ -1,5 +1,5 @@
 import Orbtial from "./extensions/orbital.js";
-import Centroid from "./extensions/centroid.js";
+import Panning from "./extensions/panning-xy.js";
 import Zoom from "./default/zoom.js";
 
 const {
@@ -33,8 +33,7 @@ class OrbitalCamera {
    
    constructor(camera) {
       this.#extensions['orbital'] = new Orbtial(camera, this.#state); 
-      this.#extensions['centroid'] = new Centroid(camera, this.#state); 
-      this.#extensions['zoom'] = new Centroid(camera, this.#state); 
+      this.#extensions['panning'] = new Panning(camera, this.#state); 
 
       this.#zoom = new Zoom(camera, this.#state);
       this.#state.distance = camera.position.distanceTo(this.#state.origin);
@@ -60,7 +59,7 @@ class OrbitalCamera {
    pointerDown() { this.#mode.pointerDown(); }
 
 	get is_orbital() { return this.#mode == 'orbital'; }
-	get is_centroid() { return this.#mode == 'centroid'; }
+	get is_panning() { return this.#mode == 'panning'; }
 
    get zoom() { 
       if (!this.#zoom) {

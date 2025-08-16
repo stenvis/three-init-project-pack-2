@@ -21,8 +21,8 @@ function move(ev) {
 
 function pointerDown(ev) {
    if (ev.which == 3) {
-      if (orbital.is_centroid) return;
-      orbital.setMode('centroid');
+      if (orbital.is_panning) return;
+      orbital.setMode('panning');
       orbital.update(ev);
    }
    is_locked = false;
@@ -53,23 +53,25 @@ function pointerLeave() {
 
 function register() {
    initVariables();
-   addEvents();
+   enable();
 }
 
-function addEvents() {
+function enable() {
    addEv(canvas, 'pointerdown', pointerDown);
-   addEv(canvas, 'pointermove', move);
-   addEv(canvas, 'pointerup', pointerUp);
-   addEv(canvas, 'wheel', changeZoom);
-   addEv(canvas, 'pointerleave', pointerLeave);
+   addEv(window, 'pointermove', move);
+   addEv(window, 'pointerup', pointerUp);
+   addEv(canvas, 'wheel', changeZoom, { passsive: false });
+   addEv(window, 'pointerleave', pointerLeave);
+   addEv(window, 'visibilitychange', pointerLeave);
 }
 
-function delEvents() {
+function disable() {
    delEv(canvas, 'pointerdown', pointerDown);
-   delEv(canvas, 'pointermove', move);
-   delEv(canvas, 'pointerup', pointerUp);
-   delEv(canvas, 'wheel', changeZoom);
-   delEv(canvas, 'pointerleave', pointerLeave);
+   delEv(window, 'pointermove', move);
+   delEv(window, 'pointerup', pointerUp);
+   delEv(canvas, 'wheel', changeZoom, { passsive: false });
+   delEv(window, 'pointerleave', pointerLeave);
+   delEv(window, 'visibilitychange', pointerLeave);
 }
 
 function initVariables() {

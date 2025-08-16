@@ -13,9 +13,7 @@ const
    CENTROID_THRESHOLD = 0.002,
 	DAMPING_FACTOR = 0.1;
 
-const CAMERA_DAMPING_INDEX = 'camera_id';
-
-class Centroid {
+class Panning {
    #camera;
    #state;
 
@@ -50,10 +48,8 @@ class Centroid {
 		dst_centroid_pos.z = last_centroid_pos.z + rz + fz;
 		dst_camera_pos.x = last_camera_pos.x + rx + fx;
 		dst_camera_pos.z = last_camera_pos.z + rz + fz;
-	}
 
-	helper(origin) {
-		THREE_APP.system.sphere.position.copy(origin);
+		THREE_APP.system.pool.addTarget(this.#camera.uuid, this.damping);
 	}
 
 	damping = () => {
@@ -64,7 +60,6 @@ class Centroid {
 		camera.position.z = lerp(camera.position.z, dst_camera_pos.z, DAMPING_FACTOR);
 
 		camera.lookAt(origin);
-		this.helper(origin);
 
 		const threshold = this.offsetThreshold(camera.position);
 
@@ -72,7 +67,7 @@ class Centroid {
 	}
 
    clear() {
-		THREE_APP.system.pool.removeTarget(CAMERA_DAMPING_INDEX);
+		THREE_APP.system.pool.removeTarget(this.#camera.uuid);
 	}
 
 	offsetThreshold(src_camera_pos) {
@@ -90,4 +85,4 @@ class Centroid {
    pointerDown = () => {};
 }
 
-export default Centroid;
+export default Panning;

@@ -7,7 +7,7 @@ const
    CENTROID_THRESHOLD = 0.001,
 	DAMPING_FACTOR = 0.1;
 
-class Centroid {
+class Panning {
    #camera;
    #state;
 	#cross_x = new THREE.Vector3();
@@ -76,4 +76,4 @@ class Centroid {
    pointerDown = () => {};
 }
 
-export default Centroid;
+export default Panning;
